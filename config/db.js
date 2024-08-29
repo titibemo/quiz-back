@@ -14,7 +14,7 @@ module.exports = connexionDatabase;
 
 
 
-/*
+/* test
 connection.query('SELECT 1 + 1 AS solution', (err, rows, fields) => {
   if (err) throw err
 

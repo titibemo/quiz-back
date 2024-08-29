@@ -4,19 +4,20 @@ const cors = require('cors');
 
 require('dotenv').config();
 
+process.env.ACCESS_TOKEN_SECRET;
+
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const app = express();
 
 app.use(bodyParser.json());
-
-
-
-app.use(cors);
-  app.use(cors({
-    origin: "http://localhost:8080"
-  }))
+app.use(express.urlencoded());
+app.use(cors({
+  origin: "http://localhost:8080"
+}))
  
+app.use(cookieParser());
 
 
 const getDatabase = require('./config/db.js');
@@ -93,6 +94,8 @@ const userRoutes = require('./routes/users')
 app.use('/api/users', userRoutes);
 app.use('/api/users/register', userRoutes);
 app.use('/api/users/login', userRoutes)
+app.use('/api/users/logout', userRoutes)
+app.use('/api/users/getCookie', userRoutes)
 
 
 

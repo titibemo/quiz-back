@@ -2,30 +2,35 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const getDatabase = require('./../config/db.js');
-const cors = require('cors');
+const jwt = require('jsonwebtoken');
+
 
 const app = express()
 const bodyParse = require('body-parser')
+//app.use(bodyParser.urlencoded({ extended: true }));
+
 
 router.get('/', (req, res) =>{
-
-    app.use(cors);
-    app.use(cors({
-    origin: "http://localhost:8080/connexion"
-    }))
- 
-
     let connexionDatabase = getDatabase();
     connexionDatabase.connect()
-
+    
     const sql = 'SELECT * FROM users';
     connexionDatabase.query(sql, (err, results) =>{
         if(err){
             return res.status(500).send(err);
         }
         else{
-           res.status(200).json(results); // Good value
+           
+            res.status(200).json(results); // Good value
             
+           //return res.status(200).json(results); // Good value
+           
+
+          //return console.log(res.status(200));
+            // Good value
+
+           // Good value
+        
             //res.status(200).json(results).render("./../../front/quiz-project/src/views/ListUserView.vue");
             //return console.log("ok");
             //res.send(console.log("coucou"));
@@ -39,27 +44,58 @@ router.get('/', (req, res) =>{
 
 
 router.post('/register', async (req, res) =>{
+
     let connexionDatabase = getDatabase();
     connexionDatabase.connect()
 
+    
     const { username, password, name, firstname } = req.body;
+    
     const hashedPassword = await bcrypt.hash(password, 10);
-
+    
     const sql =`INSERT INTO users (username, password ,name, firstname) VALUES (?, ?, ?, ?);`
     connexionDatabase.query(sql, [username, hashedPassword, name, firstname], (err,result) =>{
         if(err){
             return res.status(500).send(err)
-        }
-        else{
-           //return res.status(201).render("./../../front/quiz-project/src/views/HomeView.vue")
-           res.status(201).send({message: 'utilisateur créée'})
-        }
-    })
+            }
+            else{
+
+            res.status(201);
+            res.redirect('http://localhost:8080');
+            
+            }
+            })
+            
+           
+        //const { username, password, name, firstname } = req.body;
+        //res.send(username)
+
+       // a utiliser -< récupération des datas
+       //res.send(JSON.stringify(req.body.username));
+
 })
 
 
+/*
+app.use(session({
+    name: 'sessionIdCookie',
+    secret: 'thisshouldbeasecret',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      httpOnly: true,
+      maxAge: 3600000, // 1hr
+      secure: true, // cookie is only accessible over HTTP, requires HTTPS
+    }
 
-// TODO router login
+}));
+*/
+
+
+// router login avant jwt
+
+
+/*
 
 router.post('/login', async (req, res) =>{
 
@@ -68,7 +104,7 @@ router.post('/login', async (req, res) =>{
       
     const { username, password} = req.body;
 
-    const sql =`SELECT password FROM users WHERE username = ?;`;
+    const sql =`SELECT id, password FROM users WHERE username = ?;`;
     
     connexionDatabase.query(sql, [username], (err, resultQueryPassword) =>{
         const Userpassword = resultQueryPassword[0];
@@ -85,29 +121,127 @@ router.post('/login', async (req, res) =>{
         
             if (result) {
                 // Passwords match, authentication successful
-                res.status(201).send({
-                    succes: "réussi",
-                })
+
+                res.cookie('cookie_quiz', 'cookie_value', {
+                    expire : 24 * 60 * 60 * 1000
+                    //secure: true
+                });
+                res.status(201);
+                res.redirect('http://localhost:8080/liste-utilisateur');
             } else {
                 // Passwords don't match, authentication failed
                 res.status(201).send({
                     succes: "pas le même mot de passe",
                 })
+                
             }
         });
-    
-
-    /*
-    res.status(201).send({
-        succes: "ok",
-        motdepasseindiqué: password,
-        aaaa: Userpassword
-    })
-       */ 
-
-
     })
 })
+
+*/
+
+
+router.post('/login', async (req, res) =>{
+
+    let connexionDatabase = getDatabase();
+    connexionDatabase.connect()
+      
+    const { username, password} = req.body;
+
+    const sql =`SELECT id, password FROM users WHERE username = ?;`;
+    
+    connexionDatabase.query(sql, [username], (err, resultQueryPassword) =>{
+        const Userpassword = resultQueryPassword[0];
+        
+        if(err){
+            return res.status(500).send(err)
+        }
+        bcrypt.compare(password, Userpassword.password, (err, result) => {
+            if (err) {
+                // Handle error
+                console.error('Error comparing passwords:', result, err);
+                return;
+            }
+        
+            if (result) {
+                // Passwords match, authentication successful
+
+                const token = jwt.sign({id: resultQueryPassword[0].id}, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '3 hours' })
+                //return res.json({ access_token: token })
+
+                /*res.cookie('cookie_quiz', 'cookie_value', {
+                    expire : 24 * 60 * 60 * 1000
+                    //secure: true
+                });*/
+                
+                res.status(201);
+                res.redirect('http://localhost:8080/liste-utilisateur');
+            } else {
+                // Passwords don't match, authentication failed
+                res.status(201).send({
+                    succes: "pas le même mot de passe",
+                })
+                
+            }
+        });
+    })
+})
+
+
+
+
+
+/*
+
+router.post('/login', async (req, res) =>{
+
+    let connexionDatabase = getDatabase();
+    connexionDatabase.connect()
+      
+    const { username, password} = req.body;
+
+    const sql =`SELECT id, password FROM users WHERE username = ?;`;
+    
+    connexionDatabase.query(sql, [username], (err, resultQueryPassword) =>{
+        //const Userpassword = resultQueryPassword[0];
+
+        res.status(201).send({
+            succes: resultQueryPassword[0].id,
+        })
+        
+    })
+})
+
+*/
+
+/*
+set cookie;
+*/
+router.get('/logout',function(req, res){
+    res.clearCookie('cookie_quiz');
+    return res.redirect('http://localhost:8080');
+});
+
+router.get('/getCookie',function(req, res){
+
+    res.cookie('cookie_quiz', 'cookie_value', {
+        expire : 24 * 60 * 60 * 1000
+        //secure: true
+    });
+
+
+
+
+    //return res.redirect('http://localhost:8080');
+
+    res.send(JSON.stringify(req.cookies.cookie_name))
+
+
+
+
+});
+
 
 
 module.exports = router;
