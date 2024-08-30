@@ -2,13 +2,15 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const getDatabase = require('./../config/db.js');
-const jwt = require('jsonwebtoken');
+let jwt = require('jsonwebtoken');
 
 
 const app = express()
 const bodyParse = require('body-parser')
 //app.use(bodyParser.urlencoded({ extended: true }));
 
+const user = require("../controller/user.js")
+const auth = require("../middleware/auth.js")
 
 router.get('/', (req, res) =>{
     let connexionDatabase = getDatabase();
@@ -95,7 +97,7 @@ app.use(session({
 // router login avant jwt
 
 
-/*
+/* 
 
 router.post('/login', async (req, res) =>{
 
@@ -141,7 +143,7 @@ router.post('/login', async (req, res) =>{
 
 */
 
-
+/*
 router.post('/login', async (req, res) =>{
 
     let connexionDatabase = getDatabase();
@@ -167,16 +169,14 @@ router.post('/login', async (req, res) =>{
             if (result) {
                 // Passwords match, authentication successful
 
-                const token = jwt.sign({id: resultQueryPassword[0].id}, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '3 hours' })
+                const token = jwt.sign({userId: 10}, "$2y$10$Fq.tYdn8ejM0JtXpvRoAaOnwv7HdlEb33.fpGGo3h0uOgfHyPFmaq"//, { expiresIn: '3 hours' })
+                )
                 //return res.json({ access_token: token })
 
-                /*res.cookie('cookie_quiz', 'cookie_value', {
-                    expire : 24 * 60 * 60 * 1000
-                    //secure: true
-                });*/
+                //res.cookie('coucou', token);
                 
-                res.status(201);
-                res.redirect('http://localhost:8080/liste-utilisateur');
+                res.status(201).send(token);
+                //res.redirect('http://localhost:8080/liste-utilisateur');
             } else {
                 // Passwords don't match, authentication failed
                 res.status(201).send({
@@ -187,7 +187,7 @@ router.post('/login', async (req, res) =>{
         });
     })
 })
-
+*/
 
 
 
@@ -218,29 +218,22 @@ router.post('/login', async (req, res) =>{
 /*
 set cookie;
 */
+
+/*
 router.get('/logout',function(req, res){
     res.clearCookie('cookie_quiz');
     return res.redirect('http://localhost:8080');
 });
-
-router.get('/getCookie',function(req, res){
-
-    res.cookie('cookie_quiz', 'cookie_value', {
-        expire : 24 * 60 * 60 * 1000
-        //secure: true
-    });
+*/
 
 
+router.post("/login", user.login)
+router.post("/register", user.register)
+router.post("/listUsers", user.listUsers)
+router.get("/test", auth.authorization, user.test)
 
+//router.get("/getA", auth.getA)
 
-    //return res.redirect('http://localhost:8080');
-
-    res.send(JSON.stringify(req.cookies.cookie_name))
-
-
-
-
-});
 
 
 
