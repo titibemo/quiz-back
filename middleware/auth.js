@@ -1,4 +1,5 @@
 let jwt = require("jsonwebtoken");
+   
 
 exports.authorization = (req,res,next) =>{
     try{
@@ -6,6 +7,7 @@ exports.authorization = (req,res,next) =>{
         req.token = jwt.verify(token, "$2y$10$xMkfOk/iYD69yU93pS.hUensoqZXrDa9DCHKFvyURdOlYbDIRVngu")
         next();
     }
+    
     catch{
         res.status(401).json({message: "probleme d'authentification"})
     }

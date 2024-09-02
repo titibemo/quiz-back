@@ -2,7 +2,7 @@ let jwt = require("jsonwebtoken");
 const getDatabase = require('../config/db');
 const bcrypt = require('bcrypt');
 
-//---------------------------------LOGIN---------------------------------------
+//------------------------------------------------------------------------------LOGIN---------------------------------------
 exports.login = (req, res,) =>{
 
     let connexionDatabase = getDatabase();
@@ -62,13 +62,29 @@ exports.login = (req, res,) =>{
     })
 
 }
-//--------------------------------- AUTHENTIFICATION USERS ---------------------------------------
-exports.auth = (req,res) => { 
+//-------------------------------------------------------------------------- CHECK ROLE USER ADMIN ---------------------------------------
+
+exports.authorization = (req,res,next) =>{
+    try{
+        const token = req.headers.authorization.split(' ')[1]
+        req.token = jwt.verify(token, "$2y$10$xMkfOk/iYD69yU93pS.hUensoqZXrDa9DCHKFvyURdOlYbDIRVngu")
+         next();
+
+    }
+    catch{
+        res.status(401).json({message: "probleme d'authentification"})
+    }
+}
+
+
+
+//--------------------------------------------------------------------------- AUTHENTIFICATION USERS ---------------------------------------
+exports.auth = (req,res, next) => { 
 
     try{
         //const token = req.headers.authorization.split(' ')[1]
-        const token = req.headers
-        res.status(200).json(token);
+        //const token = req.headers
+        //res.status(200).json(token);
 
 
         //req.token = jwt.verify(token, "$2y$10$xMkfOk/iYD69yU93pS.hUensoqZXrDa9DCHKFvyURdOlYbDIRVngu")
@@ -84,6 +100,8 @@ exports.auth = (req,res) => {
                 data: 'les-donnes'
             }
         )*/
+       res.status(200).json({message: "ok"})
+       next()
             
     }
     catch{
@@ -91,7 +109,7 @@ exports.auth = (req,res) => {
     }
 
     //const myJwt = retrieveJwt(request);
-    res.status(200).json({message: "authentification réussi"})
+   // res.status(200).json({message: "authentification réussi"})
     
 
 
@@ -104,7 +122,7 @@ exports.auth = (req,res) => {
 
 
 
-//---------------------------------LIST USERS ---------------------------------------
+//-----------------------------------------------------------------------------------LIST USERS ---------------------------------------
 exports.listUsers = (req, res) =>{
     let connexionDatabase = getDatabase();
     connexionDatabase.connect()
@@ -138,7 +156,7 @@ exports.listUsers = (req, res) =>{
 }
 
 
-//--------------------------------- REGISTRATION USERS ---------------------------------------
+//---------------------------------------------------------------------------------- REGISTRATION USERS ---------------------------------------
 exports.register = async (req, res) =>{
     
     let connexionDatabase = getDatabase();
@@ -171,9 +189,10 @@ exports.register = async (req, res) =>{
 
 }
 
-//--------------------------------- test ---------------------------------------
+//------------------------------------------------------------------------ Distribute cookie id and role from database---------------------------------------
 
 exports.test = (req, res) => {
+
     res.status(200).json({
         message: 'valide',
         id: req.token.userId,
@@ -183,8 +202,16 @@ exports.test = (req, res) => {
 }
 
 
+//------------------------------------------------------------------------ Logout ---------------------------------------
+
+exports.logout = (req, res) => {
+
+    res.status(200).clearCookie('quiz_website')
+    res.redirect('http://localhost:8080');
+ 
 
 
+}
 
 
 

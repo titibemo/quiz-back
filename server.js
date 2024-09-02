@@ -13,8 +13,10 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(express.urlencoded());
+
 app.use(cors({
-  origin: "http://localhost:8080"
+  origin: "http://localhost:8080",
+
 }))
  
 app.use(cookieParser());
@@ -90,12 +92,19 @@ const database = db.connect((err) => {
 
 
 const userRoutes = require('./routes/users')
+const quizRoutes = require('./routes/quiz.js')
 
 app.use('/api/users', userRoutes);
 app.use('/api/users/register', userRoutes);
-app.use('/api/users/login', userRoutes)
-app.use('/api/users/logout', userRoutes)
-app.use('/api/users/getCookie', userRoutes)
+app.use('/api/users/login', userRoutes);
+app.use('/api/users/logout', userRoutes);
+app.use('/api/users/getCookie', userRoutes);
+
+app.use('/api/quiz', quizRoutes);
+app.use('/api/quiz/listQuiz', quizRoutes);
+app.use('/api/quiz/eraseQuiz', quizRoutes);
+app.use('/api/quiz/getQuizById/:id', quizRoutes);
+app.use('/api/quiz/modifyQuiz/:id', quizRoutes);
 
 
 
