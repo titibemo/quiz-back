@@ -93,6 +93,7 @@ const database = db.connect((err) => {
 
 const userRoutes = require('./routes/users')
 const quizRoutes = require('./routes/quiz.js')
+const questionRoutes = require('./routes/question.js')
 
 app.use('/api/users', userRoutes);
 app.use('/api/users/register', userRoutes);
@@ -105,6 +106,9 @@ app.use('/api/quiz/listQuiz', quizRoutes);
 app.use('/api/quiz/eraseQuiz', quizRoutes);
 app.use('/api/quiz/getQuizById/:id', quizRoutes);
 app.use('/api/quiz/modifyQuiz/:id', quizRoutes);
+
+app.use('/api/question', questionRoutes);
+app.use('/api/question/newQuestion', questionRoutes);
 
 
 
