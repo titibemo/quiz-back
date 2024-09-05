@@ -2,18 +2,19 @@ let jwt = require("jsonwebtoken");
 const getDatabase = require('../config/db');
 const bcrypt = require('bcrypt');
 
-exports.newQuestion = (req, res,) =>{
-/*
+exports.validateQuestions = (req, res,) =>{
+    /*
     let connexionDatabase = getDatabase();
     connexionDatabase.connect()
-*/
-
-    const { question15 } = req.body;
-      
     
-/*
-    const sql =`INSERT INTO quiz (name_quiz) VALUES (?);`
-    connexionDatabase.query(sql, [quiz_name], (err,result) =>{
+   
+   const { idQuestion, questions, answers, correctAnswer } = req.body
+
+let id = req.params.id
+
+  
+    const sql =`INSERT INTO question (id_question, name_question, answers_question, correct_answer) VALUES (?, ?, ?, ?);`
+    connexionDatabase.query(sql, [idQuestion, questions, answers, correctAnswer], (err,result) =>{
         if(err){
             return res.status(500).send(err)
             }
@@ -27,6 +28,18 @@ exports.newQuestion = (req, res,) =>{
 */
 
 
-    res.status(201).send({question15})
+
+    res.status(201).send({
+       /* idQuestion : idQuestion,
+        questions : questions,
+        answers : answers,
+        correctAnswer : correctAnswer,*/
+        id: id
+    })
+
+
+
+
+
 }
 

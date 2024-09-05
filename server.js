@@ -108,7 +108,7 @@ app.use('/api/quiz/getQuizById/:id', quizRoutes);
 app.use('/api/quiz/modifyQuiz/:id', quizRoutes);
 
 app.use('/api/question', questionRoutes);
-app.use('/api/question/newQuestion', questionRoutes);
+app.use('/api/question/validateQuestions/:id', questionRoutes);
 
 
 

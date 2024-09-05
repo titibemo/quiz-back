@@ -13,7 +13,7 @@ const quiz = require("../controller/quiz.js")
 const question = require("./../controller/question.js")
 const auth = require("../middleware/auth.js")
 
-router.post("/newQuestion", question.newQuestion)
+router.post("/validateQuestions/:id", question.validateQuestions)
 
 
 
