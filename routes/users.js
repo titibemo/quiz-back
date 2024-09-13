@@ -19,7 +19,47 @@ router.get("/listUsers", user.listUsers)
 router.get("/test", auth.authorization, user.test)
 
 
-//router.get("/getA", auth.getA)
+
+
+router.post("/bbb",(req, res) => {
+  
+    let connexionDatabase = getDatabase();
+    connexionDatabase.connect()
+      
+    const { username, password} = req.body;
+  
+    const sql =`SELECT id, role, password FROM users WHERE username = ?;`;
+    
+    connexionDatabase.query(sql, [username], (err, resultQuery) =>{
+     
+      if(err){
+          return res.status(500).send(err)
+      }
+      bcrypt.compare(password, resultQuery[0].password, (err, result) => {
+          if (err) {
+              res.status(500).send({success: "error"})
+              return;
+          }
+      
+          if (result) {
+              res.status(201).send({success: "ok"})
+          }
+          else {
+              // Passwords don't match, authentication failed
+              res.status(201).send({
+                  succes: "pas le même mot de passe",
+              })
+              
+          }
+      });
+    })
+
+   //res.status(200).send({success: "ok"})
+  });
+
+
+
+
 
 
 module.exports = router;

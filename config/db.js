@@ -1,3 +1,4 @@
+require('dotenv').config();
 const connexionDatabase = () => { 
     const mysql = require('mysql2')
     const connection = mysql.createConnection({
@@ -52,7 +53,6 @@ connection.end()
 
 /*
 
-require('dotenv').config();
 
 const mysql = require('mysql2');
 

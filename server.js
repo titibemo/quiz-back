@@ -1,11 +1,7 @@
+require('dotenv').config();
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require("swagger-ui-express");
 const cors = require('cors');
-
-
-
-
-require('dotenv').config();
 
 process.env.ACCESS_TOKEN_SECRET;
 
@@ -18,7 +14,6 @@ app.use(bodyParser.json());
 app.use(express.urlencoded());
 
 app.use(cors({
-  // TODO GOOD VALUE origin: "http://localhost:8080",
   origin: ['http://localhost:8080', 'http://localhost:3020']
 
 }))
@@ -55,47 +50,6 @@ app.listen(process.env.PORT, () => {
     console.log(`Server is running on port ${process.env.PORT}`)
 });
   
-connexionDatabase.connect()
-
-
-connexionDatabase.query('SELECT 1 + 1 AS solution', (err, rows, fields) => {
-  if (err) throw err
-
-  console.log('The solution is: ', rows[0].solution)
-})
-
-connexionDatabase.end()
-
-/*
-const mysql = require('mysql2')
-const connection = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME
-})
-*/
-
-
-
-
-
-
-
-
-/*
-const database = db.connect((err) => {
-    if(err){
-        console.log('erreur');        
-    }
-    else{
-        console.log("bravo thierry");
-        return database;
-    }
-})
-*/
-
-
 const userRoutes = require('./routes/users')
 const quizRoutes = require('./routes/quiz.js')
 const questionRoutes = require('./routes/question.js')
@@ -105,6 +59,8 @@ app.use('/api/users/register', userRoutes);
 app.use('/api/users/login', userRoutes);
 app.use('/api/users/logout', userRoutes);
 app.use('/api/users/getCookie', userRoutes);
+
+app.use('/api/users/bbb', userRoutes);
 
 app.use('/api/quiz', quizRoutes);
 app.use('/api/quiz/listQuiz', quizRoutes);

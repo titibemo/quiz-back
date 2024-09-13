@@ -29,7 +29,7 @@ const bcrypt = require('bcrypt');
  *                                      example: choupi 
  */
 exports.login = (req, res,) =>{
-/*
+
     let connexionDatabase = getDatabase();
     connexionDatabase.connect()
       
@@ -51,7 +51,7 @@ exports.login = (req, res,) =>{
             }
         
             if (result) {
-
+                res.status(201)
                 let token = jwt.sign({
                     userId: resultQuery[0].id,
                     userRole: resultQuery[0].role
@@ -69,25 +69,24 @@ exports.login = (req, res,) =>{
 
                // res.status(201).json({succes: a});
                
-               //res.redirect('http://localhost:8080/liste-utilisateur');
+               res.redirect('http://localhost:8080/liste-utilisateur');
                
                 
                // res.status(201).send({
                 //     succes: token,
                 // })
                 
-            } else {
+            }
+            else {
                 // Passwords don't match, authentication failed
-            res.status(201).send({
-                succes: "pas le même mot de passe",
+                res.status(201).send({
+                    succes: "pas le même mot de passe",
                 })
                 
-                }
-                });
-                })
-                */
-               res.status(200);
             }
+        });
+    })
+}
 //-------------------------------------------------------------------------- CHECK ROLE USER ADMIN ---------------------------------------
 
 exports.authorization = (req,res,next) =>{
@@ -322,6 +321,13 @@ exports.logout = (req, res) => {
     res.redirect('http://localhost:8080');
 }
 
+/*
+exports.bbb = (req, res) => {
+    res.status(200).send({
+        success: "ok"
+    })
+  };
+*/
 
 
 
