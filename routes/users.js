@@ -22,6 +22,4 @@ router.get("/test", auth.authorization, user.test)
 //router.get("/getA", auth.getA)
 
 
-
-
 module.exports = router;

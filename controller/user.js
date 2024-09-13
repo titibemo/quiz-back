@@ -3,8 +3,33 @@ const getDatabase = require('../config/db');
 const bcrypt = require('bcrypt');
 
 //------------------------------------------------------------------------------LOGIN---------------------------------------
-exports.login = (req, res,) =>{
 
+/**
+ * @swagger
+ * api/users/login:
+ *      post:
+ *          summary: Connexion
+ *          tags:
+ *            - Users
+ *          responses:
+ *              200:
+ *                  description: Se connecte avec un username et un mot de passe
+ *                  content:
+ *                      application/json:
+ *                         schema:
+ *                            type: array
+ *                            items:
+ *                               type: object
+ *                               properties:
+ *                                  username:
+ *                                      type: string
+ *                                      example: choupi 
+ *                                  password:
+ *                                      type: string 
+ *                                      example: choupi 
+ */
+exports.login = (req, res,) =>{
+/*
     let connexionDatabase = getDatabase();
     connexionDatabase.connect()
       
@@ -26,7 +51,6 @@ exports.login = (req, res,) =>{
             }
         
             if (result) {
-                // Passwords match, authentication successful
 
                 let token = jwt.sign({
                     userId: resultQuery[0].id,
@@ -35,33 +59,35 @@ exports.login = (req, res,) =>{
 
                 res.cookie('quiz_website', token);
 
-                /*
-                res.cookie("quiz_site", token, {
-                    httpOnly: true,
-                    secure: true,
-                    sameSite: "None"
-                });
-                */
+                
+                // res.cookie("quiz_site", token, {
+                //     httpOnly: true,
+                //     secure: true,
+                //     sameSite: "None"
+                // });
+                
 
                // res.status(201).json({succes: a});
-                res.redirect('http://localhost:8080/liste-utilisateur');
-
+               
+               //res.redirect('http://localhost:8080/liste-utilisateur');
+               
                 
-               /* res.status(201).send({
-                    succes: token,
-                })*/
+               // res.status(201).send({
+                //     succes: token,
+                // })
                 
             } else {
                 // Passwords don't match, authentication failed
-                res.status(201).send({
-                    succes: "pas le même mot de passe",
+            res.status(201).send({
+                succes: "pas le même mot de passe",
                 })
                 
+                }
+                });
+                })
+                */
+               res.status(200);
             }
-        });
-    })
-
-}
 //-------------------------------------------------------------------------- CHECK ROLE USER ADMIN ---------------------------------------
 
 exports.authorization = (req,res,next) =>{
@@ -79,6 +105,7 @@ exports.authorization = (req,res,next) =>{
 
 
 //--------------------------------------------------------------------------- AUTHENTIFICATION USERS ---------------------------------------
+
 exports.auth = (req,res, next) => { 
 
     try{
@@ -123,6 +150,31 @@ exports.auth = (req,res, next) => {
 
 
 //-----------------------------------------------------------------------------------LIST USERS ---------------------------------------
+
+/**
+ * @swagger
+ * /api/users/listUsers:
+ *      get:
+ *          summary: récupère tous les utilisateurs
+ *          tags:
+ *            - Users
+ *          responses:
+ *              200:
+ *                  description: Liste des utilisateurs
+ *                  content:
+ *                      application/json:
+ *                         schema:
+ *                            type: array
+ *                            items:
+ *                               type: object
+ *                               properties:
+ *                                  id:
+ *                                      type: integer 
+ *                                      example: 25 
+ *                                  username:
+ *                                      type: string 
+ *                                      example: titi 
+ */
 exports.listUsers = (req, res) =>{
     let connexionDatabase = getDatabase();
     connexionDatabase.connect()
@@ -157,6 +209,37 @@ exports.listUsers = (req, res) =>{
 
 
 //---------------------------------------------------------------------------------- REGISTRATION USERS ---------------------------------------
+/**
+ * @swagger
+ * api/users/register:
+ *      post:
+ *          summary: Inscription des utilisateurs
+ *          tags:
+ *            - Users
+ *          responses:
+ *              200:
+ *                  description: Les utilisateurs s'inscrivent en renseignant un username, mot de passe, un nom et prénom 
+ *                  content:
+ *                      application/json:
+ *                         schema:
+ *                            type: array
+ *                            items:
+ *                               type: object
+ *                               properties:
+ *                                  Entrez votre nom d'utilisateur:
+ *                                      type: string
+ *                                      example: choupi 
+ *                                  Entrez votre mot de passe:
+ *                                      type: string 
+ *                                      example: tarte 
+ *                                  Entrez votre nom:
+ *                                      type: string 
+ *                                      example: john
+ *                                  Entrez votre prénom:
+ *                                      type: string 
+ *                                      example: doe 
+ *  
+ */
 exports.register = async (req, res) =>{
     
     let connexionDatabase = getDatabase();
@@ -168,7 +251,7 @@ exports.register = async (req, res) =>{
     const hashedPassword = await bcrypt.hash(password, 10);
     
     const sql =`INSERT INTO users (username, password ,name, firstname) VALUES (?, ?, ?, ?);`
-    connexionDatabase.query(sql, [username, hashedPassword, name, firstname], (err,result) =>{
+    connexionDatabase.query(sql, [username, hashedPassword, name, firstname], (err,res) =>{
         if(err){
             return res.status(500).send(err)
             }
@@ -203,14 +286,40 @@ exports.test = (req, res) => {
 
 
 //------------------------------------------------------------------------ Logout ---------------------------------------
-
+/**
+ * @swagger
+ * api/users/logout:
+ *      post:
+ *          summary: Déconnection
+ *          tags:
+ *            - Users
+ *          responses:
+ *              200:
+ *                  description: Les utilisateurs se déconnectent de l'application en effaçant le cookie et en le retournant à la page d'accueil.
+ *                  content:
+ *                      application/json:
+ *                         schema:
+ *                            type: array
+ *                            items:
+ *                               type: object
+ *                               properties:
+ *                                  Entrez votre nom d'utilisateur:
+ *                                      type: string
+ *                                      example: choupi 
+ *                                  Entrez votre mot de passe:
+ *                                      type: string 
+ *                                      example: tarte 
+ *                                  Entrez votre nom:
+ *                                      type: string 
+ *                                      example: john
+ *                                  Entrez votre prénom:
+ *                                      type: string 
+ *                                      example: doe 
+ *  
+ */
 exports.logout = (req, res) => {
-
     res.status(200).clearCookie('quiz_website')
     res.redirect('http://localhost:8080');
- 
-
-
 }
 
 
