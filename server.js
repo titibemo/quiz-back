@@ -54,19 +54,25 @@ const userRoutes = require('./routes/users')
 const quizRoutes = require('./routes/quiz.js')
 const questionRoutes = require('./routes/question.js')
 
-app.use('/api/users', userRoutes);
 app.use('/api/users/register', userRoutes);
 app.use('/api/users/login', userRoutes);
 app.use('/api/users/logout', userRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/users/getUserById/:id', userRoutes);
+app.use('/api/users/eraseUser/:id', userRoutes);
+app.use('/api/users/modifyUser/:id', userRoutes);
 app.use('/api/users/getCookie', userRoutes);
 
 app.use('/api/users/bbb', userRoutes);
 
 app.use('/api/quiz', quizRoutes);
 app.use('/api/quiz/listQuiz', quizRoutes);
+app.use('/api/quiz/listAvailableQuiz', quizRoutes);
 app.use('/api/quiz/eraseQuiz', quizRoutes);
 app.use('/api/quiz/getQuizById/:id', quizRoutes);
 app.use('/api/quiz/modifyQuiz/:id', quizRoutes);
+app.use('/api/quiz/availableQuiz', quizRoutes);
+app.use('/api/quiz/validateUserQuiz/:id', quizRoutes);
 
 app.use('/api/question', questionRoutes);
 app.use('/api/question/validateQuestions/:id', questionRoutes);

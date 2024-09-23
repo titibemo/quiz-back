@@ -69,7 +69,7 @@ exports.login = (req, res,) =>{
 
                // res.status(201).json({succes: a});
                
-               res.redirect('http://localhost:8080/liste-utilisateur');
+               res.redirect('http://localhost:8080/quiz');
                
                 
                // res.status(201).send({
@@ -320,6 +320,122 @@ exports.logout = (req, res) => {
     res.status(200).clearCookie('quiz_website')
     res.redirect('http://localhost:8080');
 }
+
+
+exports.eraseUser = (req, res) => {
+
+    const idUser = req.params.id
+  
+    let connexionDatabase = getDatabase();
+    connexionDatabase.connect()
+    
+    const sql = 'DELETE FROM users WHERE id = ?';
+
+    connexionDatabase.query(sql, [idUser], (err,result) =>{
+        if(err){
+            return res.status(500).send(err)
+            }
+            else{
+
+            res.status(201);
+            res.redirect('http://localhost:8080/admin/les-quiz');
+            
+            }
+            })
+            /*
+            res.status(200).send({
+                test: id
+            })*/
+}
+
+exports.getUserById = (req, res) => {
+
+    const idUser = req.params.id
+
+    let connexionDatabase = getDatabase();
+    connexionDatabase.connect()
+    
+    const sql = 'SELECT firstname, name, username FROM users WHERE id = ?';
+    connexionDatabase.query(sql, [idUser], (err, results) =>{
+        if(err){
+            return res.status(500).send(err);
+        }
+        else{
+            
+            res.status(200).json(results); // Good value
+   
+        }
+    })
+
+        /*
+        res.status(200).send({
+            test: "test",
+            id: idUser
+        })
+*/
+
+
+}
+
+exports.modifyUser = (req, res) => {
+
+    const idUser = req.params.id
+
+    const { firstname, name, username } = req.body;
+  
+    let connexionDatabase = getDatabase();
+    connexionDatabase.connect()
+    
+    const sql = 'UPDATE users SET firstname = ?, name = ?, username = ? WHERE id = ?';
+
+    connexionDatabase.query(sql, [firstname, name, username, idUser], (err,result) =>{
+        if(err){
+            return res.status(500).send(err)
+            }
+            else{
+
+            res.status(201);
+            res.redirect('http://localhost:8080/admin/les-quiz');
+            
+            }
+            })
+            
+           /*
+            res.status(200).send({
+                test: "test"
+            })*/
+}
+
+
+exports.getUserQuizById = (req, res) => {
+
+    const idUser = req.params.id
+
+    let connexionDatabase = getDatabase();
+    connexionDatabase.connect()
+    
+    const sql = 'SELECT UA.answers, QUI.name_quiz, QUES.name_question, QUES.answers_question, QUES.correct_answer FROM useranswers as UA INNER JOIN quiz as QUI INNER JOIN questions as QUES ON UA.id_quiz = QUI.id_quiz AND UA.id_quiz = QUES.id_quiz;';
+    connexionDatabase.query(sql, [idUser], (err, results) =>{
+        if(err){
+            return res.status(500).send(err);
+        }
+        else{
+            
+            res.status(200).json(results); // Good value
+   
+        }
+    })
+
+        /*
+        res.status(200).send({
+            test: "test",
+            id: idUser
+        })
+*/
+
+
+}
+
 
 /*
 exports.bbb = (req, res) => {

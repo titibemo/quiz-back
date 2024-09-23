@@ -17,6 +17,8 @@ router.get("/listQuiz", quiz.listQuiz)
 router.post("/eraseQuiz", quiz.eraseQuiz)
 router.get("/getQuizById/:id", quiz.getQuizById)
 router.post("/modifyQuiz/:id", quiz.modifyQuiz)
+router.post("/availableQuiz", quiz.availableQuiz)
+router.get("/listAvailableQuiz", quiz.listAvailableQuiz)
 
 
 

@@ -14,8 +14,12 @@ const auth = require("../middleware/auth.js")
 
 router.post("/login", user.login)
 router.get("/logout", user.logout)
-router.post("/register", user.register)
 router.get("/listUsers", user.listUsers)
+router.get("/getUserQuizById/:id", user.getUserQuizById)
+router.get("/getUserById/:id", user.getUserById)
+router.post("/eraseUser/:id", user.eraseUser)
+router.post("/modifyUser/:id", user.modifyUser)
+router.post("/register", user.register)
 router.get("/test", auth.authorization, user.test)
 
 

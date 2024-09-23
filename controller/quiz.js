@@ -6,28 +6,33 @@ const bcrypt = require('bcrypt');
 
 exports.newQuiz = (req, res,) =>{
 
-    let connexionDatabase = getDatabase();
-    connexionDatabase.connect()
+     let connexionDatabase = getDatabase();
+     connexionDatabase.connect()
 
     const { quiz_name } = req.body;
-      
+
+    let slug = quiz_name.trim().toLowerCase().replace(/\s+/g, '-');
+
+
     
 
-    const sql =`INSERT INTO quiz (name_quiz) VALUES (?);`
-    connexionDatabase.query(sql, [quiz_name], (err,result) =>{
+    const sql =`INSERT INTO quiz (name_quiz, slug_quiz) VALUES (?, ?);`
+    connexionDatabase.query(sql, [quiz_name, slug], (err,result) =>{
         if(err){
             return res.status(500).send(err)
-            }
-            else{
-
+        }
+        else{
             res.status(201);
             res.redirect('http://localhost:8080/admin/les-quiz');
             
-            }
-            })
-
-//res.status(200).send("ok")
+        }
+    })
 }
+/*
+res.status(200).send({
+    "slug": slug
+})
+}*/
 
 //---------------------------------------------------------------Display list QUIZ---------------------------------------
 
@@ -39,6 +44,27 @@ exports.listQuiz = (req, res) =>{
     
     const sql = 'SELECT * FROM quiz';
     connexionDatabase.query(sql, (err, results) =>{
+        if(err){
+            return res.status(500).send(err);
+        }
+        else{
+            
+            res.status(200).json(results); // Good value
+                        
+        }
+    })
+}
+
+exports.listAvailableQuiz = (req, res) =>{
+    let connexionDatabase = getDatabase();
+    connexionDatabase.connect()
+
+    const available = 'true';
+
+    //const { quiz_name } = req.body;
+    
+    const sql = 'SELECT * FROM quiz WHERE available = ?';
+    connexionDatabase.query(sql, [available] ,(err, results) =>{
         if(err){
             return res.status(500).send(err);
         }
@@ -144,3 +170,35 @@ exports.modifyQuiz = (req, res) =>{
 
 }
 
+
+exports.availableQuiz = (req, res) =>{
+
+    const { toggleValue, idQuiz} = req.body
+
+  
+    let connexionDatabase = getDatabase();
+    connexionDatabase.connect()
+
+    
+    const sql = 'UPDATE quiz SET available = ? WHERE id_quiz = ?';
+
+    connexionDatabase.query(sql, [toggleValue, idQuiz], (err,result) =>{
+        if(err){
+            return res.status(500).send(err)
+        }
+        else{
+            res.status(201)
+            //res.redirect('http://localhost:8080/admin/les-quiz');
+        }
+    })
+/*
+res.status(200).send({
+    
+    //"test": toggleValue
+    //"toggle": toggleValue,
+   //"answers": idQuiz
+
+});
+*/
+
+}
