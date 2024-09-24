@@ -414,7 +414,7 @@ exports.getUserQuizById = (req, res) => {
     let connexionDatabase = getDatabase();
     connexionDatabase.connect()
     
-    const sql = 'SELECT UA.answers, QUI.name_quiz, QUES.name_question, QUES.answers_question, QUES.correct_answer FROM useranswers as UA INNER JOIN quiz as QUI INNER JOIN questions as QUES ON UA.id_quiz = QUI.id_quiz AND UA.id_quiz = QUES.id_quiz;';
+    const sql = 'SELECT UA.answers, QUI.name_quiz, QUES.name_question, QUES.answers_question, QUES.correct_answer FROM useranswers as UA INNER JOIN quiz as QUI INNER JOIN questions as QUES ON UA.id_quiz = QUI.id_quiz AND UA.id_quiz = QUES.id_quiz WHERE UA.id_user = ?;';
     connexionDatabase.query(sql, [idUser], (err, results) =>{
         if(err){
             return res.status(500).send(err);

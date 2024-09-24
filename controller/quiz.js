@@ -160,8 +160,10 @@ exports.modifyQuiz = (req, res) =>{
             return res.status(500).send(err)
             }
             else{
-                res.status(201);
-                res.redirect('http://localhost:8080/admin/les-quiz');
+                res.status(201).json({
+                    succes : "votre qui a bien été moodifié"
+                });;
+                //res.redirect('http://localhost:8080/admin/les-quiz');
             
             }
             })
