@@ -20,6 +20,9 @@ router.post("/modifyQuiz/:id", quiz.modifyQuiz)
 router.post("/availableQuiz", quiz.availableQuiz)
 router.get("/listAvailableQuiz", quiz.listAvailableQuiz)
 
+router.get("/success", quiz.success)
+router.get("/display", quiz.display)
+
 
 
 /* a effacer à la fin

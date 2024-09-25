@@ -15,10 +15,27 @@ app.use(express.urlencoded());
 
 app.use(cors({
   origin: ['http://localhost:8080', 'http://localhost:3020']
-
 }))
+
+let session = require('express-session')
+
+app.use(session({ secret: '$2y$10$xMkfOk/iYD69yU93pS.hUensoqZXrDa9DCHKFvyURdOlYbDIRVngu' }));
+
  
 app.use(cookieParser());
+
+const flash = require('connect-flash'); 
+app.use(flash()) 
+
+/*
+app.use(function (req, res, next) {
+    req.session.message = req.session.message || { error: [], success: [], info: [] };
+    app.locals.message  = req.session.message;
+   })
+*/
+
+
+
 
 const swaggerOptions = {
     swaggerDefinition: {
@@ -74,9 +91,37 @@ app.use('/api/quiz/modifyQuiz/:id', quizRoutes);
 app.use('/api/quiz/availableQuiz', quizRoutes);
 app.use('/api/quiz/validateUserQuiz/:id', quizRoutes);
 
+app.use('/api/quiz/success', quizRoutes);
+app.use('/api/quiz/display', quizRoutes);
+
 app.use('/api/question', questionRoutes);
 app.use('/api/question/validateQuestions/:id', questionRoutes);
 app.use('/api/question/showQuestions/:id', questionRoutes);
+
+
+/* TEST */
+
+app.use((req, res, next) => {
+    if (req.cookies.flashMessage) {
+      res.locals.flashMessage = req.cookies.flashMessage;
+      res.clearCookie('flashMessage'); // Une fois le message affiché, on supprime le cookie
+    } else {
+      res.locals.flashMessage = null;
+    }
+    next();
+  });
+  
+  // Route pour définir un message flash
+  app.get('/success', (req, res) => {
+    // Définir un message flash dans un cookie
+    res.cookie('flashMessage', 'Opération réussie !');
+    res.redirect('/display');
+  });
+  
+  // Route pour afficher la vue avec le message flash dans une balise <p>
+  app.get('/display', (req, res) => {
+    res.render('display'); // Affiche la page "display.ejs"
+  });
 
 
 module.exports = app;

@@ -138,11 +138,21 @@ exports.getQuizById = (req, res) =>{
 
 }
 
+exports.success = (req, res) => {
+    // Définir un message flash dans un cookie
+    res.cookie('flash', { type: 'success', message: 'Opération réussie !' });
+    res.redirect('/api/quiz/display');
+  };
+
+exports.display = (req, res) => {  
+    const message = req.flash('message');  
+    // Renvoie le message au format JSON
+    res.status(200).json({ message: message });
+};
+// Fonctione mais pas ce que je veux : const message = req.flash('message');
+// Fonctione mais pas ce que je veux : res.status(200).json({ message: message, redirectUrl: 'http://localhost:8080/admin/modifier-un-quiz/6' });
+
 exports.modifyQuiz = (req, res) =>{
-
-    //res.status(200).send("ok")
-
-    //res.send("Id is set to " + req.params.id);
 
     let id = req.params.id
 
@@ -160,18 +170,16 @@ exports.modifyQuiz = (req, res) =>{
             return res.status(500).send(err)
             }
             else{
-                res.status(201).json({
-                    succes : "votre qui a bien été moodifié"
-                });;
-                //res.redirect('http://localhost:8080/admin/les-quiz');
-            
+                //req.session.message.info.push('Account created successfully');
+                //req.flash('message', 'Votre message');  // Stocke le message
+                res.status(201);
+                res.redirect('http://localhost:8080/admin/modifier-un-quiz/6');
             }
             })
-
-//res.status(200).json(id);
-
-}
-
+        }
+        
+        //res.status(201);
+        //res.redirect('http://localhost:8080/admin/les-quiz');
 
 exports.availableQuiz = (req, res) =>{
 

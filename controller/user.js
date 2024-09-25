@@ -1,6 +1,8 @@
 let jwt = require("jsonwebtoken");
 const getDatabase = require('../config/db');
 const bcrypt = require('bcrypt');
+const session = require('express-session');
+
 
 //------------------------------------------------------------------------------LOGIN---------------------------------------
 
@@ -52,6 +54,12 @@ exports.login = (req, res,) =>{
         
             if (result) {
                 res.status(201)
+                // let token = jwt.sign({
+                //     userId: resultQuery[0].id,
+                //     userRole: resultQuery[0].role
+                //     }, "$2y$10$xMkfOk/iYD69yU93pS.hUensoqZXrDa9DCHKFvyURdOlYbDIRVngu", { expiresIn: '5 hours' })
+
+                // res.cookie('quiz_website', token);
                 let token = jwt.sign({
                     userId: resultQuery[0].id,
                     userRole: resultQuery[0].role
@@ -60,11 +68,6 @@ exports.login = (req, res,) =>{
                 res.cookie('quiz_website', token);
 
                 
-                // res.cookie("quiz_site", token, {
-                //     httpOnly: true,
-                //     secure: true,
-                //     sameSite: "None"
-                // });
                 
 
                // res.status(201).json({succes: a});
